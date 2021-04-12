@@ -12,5 +12,6 @@ Some buttons can be held.
 [scarlet]Disclaimer: not intended for multiplayer use![]
 '''
 version: "0.2"
+minGameVersion: "126.2"
+dependencies: [ ]
 hidden: true
-minGameVersion: 108
