@@ -32,8 +32,7 @@ public class TimeControlMod extends Mod {
 	int h2 = 0;
 	int h3 = 0;
 
-	@Override
-	public void init() {
+	TimeControlMod() {
 		if (!Vars.headless) {
 			Table ut = new Table();
 			Table ft = new Table();
@@ -173,17 +172,19 @@ public class TimeControlMod extends Mod {
 			//t.visibility = () -> !folded;
 		});
 		table.fillParent = true;
-		MobileInput input = (MobileInput) Vars.control.input;
 		Boolp schem = () -> Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
+		Boolp mobile = () -> {
+			MobileInput input = (MobileInput) Vars.control.input;
+			return !(Vars.player.unit().isBuilding()
+					|| Vars.control.input.block != null
+					|| input.mode == PlaceMode.breaking
+					|| !Vars.control.input.selectRequests.isEmpty()
+					&& !schem.get());
+		};
 		table.visibility = () -> !folded
 				&& Vars.ui.hudfrag.shown
 				&& !Vars.ui.minimapfrag.shown()
-				&& (!Vars.mobile
-				|| !(Vars.player.unit().isBuilding()
-				|| Vars.control.input.block != null
-				|| input.mode == PlaceMode.breaking
-				|| !Vars.control.input.selectRequests.isEmpty()
-				&& !schem.get()));
+				&& (!Vars.mobile || mobile.get());
 	}
 
 	private void addMiniT(Table table) {
@@ -193,16 +194,19 @@ public class TimeControlMod extends Mod {
 			else addMini(t, speedArr, new String[]{"x.25", "x0.5", "x1", "x2", "x4", "x8+"}).width(60);
 		});
 		table.fillParent = true;
-		MobileInput input = (MobileInput) Vars.control.input;
 		Boolp schem = () -> Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
+		Boolp mobile = () -> {
+			MobileInput input = (MobileInput) Vars.control.input;
+			return !(Vars.player.unit().isBuilding()
+					|| Vars.control.input.block != null
+					|| input.mode == PlaceMode.breaking
+					|| !Vars.control.input.selectRequests.isEmpty()
+					&& !schem.get());
+		};
 		table.visibility = () -> folded
 				&& Vars.ui.hudfrag.shown
 				&& !Vars.ui.minimapfrag.shown()
-				&& (!Vars.mobile || !(Vars.player.unit().isBuilding()
-				|| Vars.control.input.block != null
-				|| input.mode == PlaceMode.breaking
-				|| !Vars.control.input.selectRequests.isEmpty()
-				&& !schem.get()));
+				&& (!Vars.mobile || mobile.get());
 	}
 
 }
