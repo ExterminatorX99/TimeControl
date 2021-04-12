@@ -23,16 +23,13 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class TimeControlMod extends Mod {
 
-	final int longPress = 90;
-	final List<Float> speedArr = Arrays.asList(0.25f, 0.5f, 1f, 2f, 4f);
-	float current = 1;
-	boolean folded = false;
-	int mode = 2;
-	int h = 0;
-	int h2 = 0;
-	int h3 = 0;
+	private final int longPress = 60;
+	private final List<Float> speedArr = Arrays.asList(0.25f, 0.5f, 1f, 2f, 4f);
+	private float current = 1;
+	private boolean folded = false;
+	private int mode = 2;
 
-	TimeControlMod() {
+	public TimeControlMod() {
 		if (!Vars.headless) {
 			Table ut = new Table();
 			Table ft = new Table();
@@ -79,9 +76,10 @@ public class TimeControlMod extends Mod {
 
 	private Cell<Button> addSpeedThree(Table t, float speed, float speed2, float speed3) {
 		Button b = new Button(Styles.logict);
+		final float[] h3 = {0};
 		b.label(() -> (current == speed ? "[#a9d8ff]" : (current == speed2 ? "[accent]" : (current == speed3 ? "[green]" : "[white]"))) + "x" + (current == speed2 ? speed2 : (current == speed3 ? speed3 : speed)) + "[]");
 		b.clicked(() -> {
-			if (h3 > longPress) return;
+			if (h3[0] > longPress) return;
 			if (current == speed) {
 				Time.setDeltaProvider(() -> Math.min(Core.graphics.getDeltaTime() * 60 * speed2, 3 * speed2));
 				current = speed2;
@@ -94,14 +92,14 @@ public class TimeControlMod extends Mod {
 		});
 		b.update(() -> {
 			if (b.isPressed()) {
-				h3 += Core.graphics.getDeltaTime() * 60;
-				if (h3 > longPress) {
+				h3[0] += Core.graphics.getDeltaTime() * 60;
+				if (h3[0] > longPress) {
 					Time.setDeltaProvider(() -> Math.min(Core.graphics.getDeltaTime() * 60 * speed3, 3 * speed3));
 					current = speed3;
 					b.setColor(Color.green);
 				}
 			} else {
-				h3 = 0;
+				h3[0] = 0;
 			}
 			b.setColor(current == speed2 ? Pal.accent : (current == speed3 ? Color.green : Pal.lancerLaser));
 		});
@@ -110,22 +108,23 @@ public class TimeControlMod extends Mod {
 
 	private Cell<Button> addOne(Table t, int speed) {
 		Button b = new Button(Styles.logict);
+		final float[] h = {0};
 		b.label(() -> (current == speed ? "[#a9d8ff]" : "[white]") + "x" + speed + "[]");
 		b.clicked(() -> {
-			if (h > longPress) return;
+			if (h[0] > longPress) return;
 			Time.setDeltaProvider(() -> Math.min(Core.graphics.getDeltaTime() * 60 * speed, 3 * speed));
 			current = speed;
 		});
 		b.update(() -> {
 			if (b.isPressed()) {
-				h += Core.graphics.getDeltaTime() * 60;
-				if (h > longPress) {
+				h[0] += Core.graphics.getDeltaTime() * 60;
+				if (h[0] > longPress) {
 					folded = true;
 					mode = speedArr.indexOf(current);
 					if (mode < 0) mode = speedArr.size();
 				}
 			} else {
-				h = 0;
+				h[0] = 0;
 			}
 		});
 		return t.add(b).size(50, 40).color(Pal.lancerLaser).pad(1);
@@ -133,9 +132,10 @@ public class TimeControlMod extends Mod {
 
 	private Cell<Button> addMini(Table t, List<Float> speedlist, String[] showlist) {
 		Button b = new Button(Styles.logict);
+		final float[] h2 = {0};
 		b.label(() -> (current == 1 ? "[#a9d8ff]" : (current > 1.9 ? "[accent]" : "[orange]")) + showlist[mode] + "[]");
 		b.clicked(() -> {
-			if (h2 > longPress) return;
+			if (h2[0] > longPress) return;
 			mode++;
 			if (mode >= speedlist.size()) mode = 0;
 			Time.setDeltaProvider(() -> Math.min(Core.graphics.getDeltaTime() * 60 * speedlist.get(mode), 3 * speedlist.get(mode)));
@@ -143,10 +143,10 @@ public class TimeControlMod extends Mod {
 		});
 		b.update(() -> {
 			if (b.isPressed()) {
-				h2 += Core.graphics.getDeltaTime() * 60;
-				if (h2 > longPress) folded = false;
+				h2[0] += Core.graphics.getDeltaTime() * 60;
+				if (h2[0] > longPress) folded = false;
 			} else {
-				h2 = 0;
+				h2[0] = 0;
 			}
 			b.setColor(current == 1 ? Pal.lancerLaser : (current > 1.9 ? Pal.accent : Color.orange));
 		});
