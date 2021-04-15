@@ -7,6 +7,7 @@ import arc.graphics.Color;
 import arc.scene.ui.Button;
 import arc.scene.ui.layout.Cell;
 import arc.scene.ui.layout.Table;
+import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.game.EventType.ClientLoadEvent;
@@ -17,14 +18,11 @@ import mindustry.input.PlaceMode;
 import mindustry.mod.Mod;
 import mindustry.ui.Styles;
 
-import java.util.Arrays;
-import java.util.List;
-
 @SuppressWarnings("unused")
 public class TimeControlMod extends Mod {
 
 	private final int longPress = 60;
-	private final List<Float> speedArr = Arrays.asList(0.25f, 0.5f, 1f, 2f, 4f);
+	private final Seq<Float> speedArr = new Seq<>(new Float[]{0.25f, 0.5f, 1f, 2f, 4f});
 	private float current = 1;
 	private boolean folded = false;
 	private int mode = 2;
@@ -121,7 +119,7 @@ public class TimeControlMod extends Mod {
 				if (h[0] > longPress) {
 					folded = true;
 					mode = speedArr.indexOf(current);
-					if (mode < 0) mode = speedArr.size();
+					if (mode < 0) mode = speedArr.size;
 				}
 			} else {
 				h[0] = 0;
@@ -130,14 +128,14 @@ public class TimeControlMod extends Mod {
 		return t.add(b).size(50, 40).color(Pal.lancerLaser).pad(1);
 	}
 
-	private Cell<Button> addMini(Table t, List<Float> speedlist, String[] showlist) {
+	private Cell<Button> addMini(Table t, Seq<Float> speedlist, String[] showlist) {
 		Button b = new Button(Styles.logict);
 		final float[] h2 = {0};
 		b.label(() -> (current == 1 ? "[#a9d8ff]" : (current > 1.9 ? "[accent]" : "[orange]")) + showlist[mode] + "[]");
 		b.clicked(() -> {
 			if (h2[0] > longPress) return;
 			mode++;
-			if (mode >= speedlist.size()) mode = 0;
+			if (mode >= speedlist.size) mode = 0;
 			Time.setDeltaProvider(() -> Math.min(Core.graphics.getDeltaTime() * 60 * speedlist.get(mode), 3 * speedlist.get(mode)));
 			current = speedlist.get(mode);
 		});
